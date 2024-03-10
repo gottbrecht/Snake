@@ -82,9 +82,15 @@ function tick() {
 }
 
 function moveSnake() {
+    const front = snakeQueue.front();
+    
+    if(front === null) {
+        return;
+    }
+
     const head = {
-        row: snakeQueue.front().row,
-        col: snakeQueue.front().col,
+        row: front().row,
+        col: front().col,
     };
 
     //handle controls
@@ -147,6 +153,20 @@ function checkCollision(row, col) {
 function writeToCell(row, col, value) {
 }
 
+function createEmptyBoard() {
+    const board = [];
+
+    for (let row = 0; row < GRID_HEIGHT; row++) {
+        const rowArray = [];
+        for (let col = 0; col < GRID_WIDTH; col++) {
+            rowArray.push(0);
+        }
+        board.push(rowArray);
+    }
+
+    return board;
+}
+
 function displayBoard() {
     const board = createEmptyBoard();
 
@@ -203,12 +223,10 @@ function initializeGame() {
     generateFood();
 }
 
-//start the game
-initializeGame();
-tick();
-
 function resetGame() {
     snakeQueue.getItems().length = 0;
     initializeGame();
 }
+
+start();
 
