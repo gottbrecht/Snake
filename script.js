@@ -154,8 +154,7 @@ function generateFood() {
 
     const snakeQueueItems = snakeQueue.getItems();
 
-
-    for (const part of snakeQueue) {
+    for (const part of snakeQueueItems) {
         if (foodPosition.row === part.row && foodPosition.col === part.col) {
             generateFood();
             return;
@@ -186,7 +185,7 @@ initializeGame();
 tick();
 
 function resetGame() {
-    snakeQueue.length = 0;
+    snakeQueue.getItems().length = 0;
     initializeGame();
 }
 
