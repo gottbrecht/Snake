@@ -84,13 +84,13 @@ function tick() {
 function moveSnake() {
     const front = snakeQueue.front();
     
-    if(front === null) {
+    if (front === null) {
         return;
     }
 
     const head = {
-        row: front().row,
-        col: front().col,
+        row: front.row,
+        col: front.col,
     };
 
     //handle controls
@@ -125,11 +125,11 @@ function moveSnake() {
 
     //check if the head eats food
     if (head.row === foodPosition.row && head.col === foodPosition.col) {
-        snakeQueue.unshift({ row: head.row, col: head.col });
+        snakeQueue.enqueue({ row: head.row, col: head.col });
         generateFood();
     } else {
-        snakeQueue.push({ row: head.row, col: head.col });
-        snakeQueue.shift();
+        snakeQueue.enqueue({ row: head.row, col: head.col });
+        snakeQueue.dequeue();
     }
 }
 
@@ -180,4 +180,46 @@ function displayBoard() {
         for (let col = 0; col < GRID_WIDTH; col++) {
             rowStr += board[row][col] + ' ';
         }
-        console.log(rowS
+       // console.log(rowStr);
+    }
+}
+
+function generateFood() {
+    foodPosition = {
+        row: Math.floor(Math.random() * GRID_HEIGHT),
+        col: Math.floor(Math.random() * GRID_WIDTH),
+    };
+
+    const snakeQueueItems = snakeQueue.getItems();
+
+    for (const part of snakeQueueItems) {
+        if (foodPosition.row === part.row && foodPosition.col === part.col) {
+            generateFood();
+            return;
+        }
+    }
+    writeToCell(foodPosition.row, foodPosition.col, 2);
+}
+
+function clearGrid() {
+    for (let row = 0; row < GRID_HEIGHT; row++) {
+        for (let col = 0; col < GRID_WIDTH; col++) {
+            writeToCell(row, col, 0);
+        }
+    }
+}
+
+//initialize the game
+function initializeGame() {
+    snakeQueue.enqueue({ row: 5, col: 5 });
+    snakeQueue.enqueue({ row: 5, col: 6 });
+    snakeQueue.enqueue({ row: 5, col: 7 });
+    generateFood();
+}
+
+function resetGame() {
+    snakeQueue.getItems().length = 0;
+    initializeGame();
+}
+
+start();
