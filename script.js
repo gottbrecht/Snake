@@ -21,3 +21,19 @@ function createBoard() {
     drawSnake();
     drawFood();
 }
+
+function drawSnake() {
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach(cell => cell.classList.remove('snake'));
+
+    snake.forEach(segment => {
+        const index = segment.x + segment.y * boardSize;
+        cells[index].classList.add('snake');
+    });
+}
+
+function drawFood() {
+    const cells = document.querySelectorAll('.cell');
+    const index = food.x + food.y * boardSize;
+    cells[index].classList.add('food');
+}
