@@ -133,24 +133,11 @@ function moveSnake() {
     }
 }
 
-function checkCollision(row, col) {
-    if (row < 0 || row >= GRID_HEIGHT || col < 0 || col >= GRID_WIDTH) {
-        return true;
-    }
-
-    const snakeQueueItems = snakeQueue.getItems();
-
-    for (const part of snakeQueueItems) {
-        if (part.row === row && part.col === col) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 function writeToCell(row, col, value) {
+    board[row][col] = value;
+
 }
+const board = createEmptyBoard();
 
 function createEmptyBoard() {
     const board = [];
@@ -158,7 +145,7 @@ function createEmptyBoard() {
     for (let row = 0; row < GRID_HEIGHT; row++) {
         const rowArray = [];
         for (let col = 0; col < GRID_WIDTH; col++) {
-            rowArray.push(0);
+            rowArray.push('0');
         }
         board.push(rowArray);
     }
@@ -167,22 +154,33 @@ function createEmptyBoard() {
 }
 
 function displayBoard() {
-    const board = createEmptyBoard();
+    clearGrid();
+
+    const gameContainer = document.getElementById("game-container");
+    gameContainer.innerHTML = ''; // Clear the previous content
+
 
     for (const part of snakeQueue.getItems()) {
-        board[part.row][part.col] = 'S';
+        writeToCell(part.row, part.col, 'S');
     }
 
-    board[foodPosition.row][foodPosition.col] = 'F';
+    writeToCell(foodPosition.row, foodPosition.col, 'F');
 
     for (let row = 0; row < GRID_HEIGHT; row++) {
-        let rowStr = '';
         for (let col = 0; col < GRID_WIDTH; col++) {
-            rowStr += board[row][col] + ' ';
+            const cell = document.createElement("div");
+            cell.textContent = board[row][col] === 'S' ? 'S' : (board[row][col] === 'F' ? 'F' : '');
+            gameContainer.appendChild(cell);
         }
-       // console.log(rowStr);
     }
 }
+
+function checkCollision(row, col) {
+    return row < 0 || row >= GRID_HEIGHT || col < 0 || col >= GRID_WIDTH ||
+    snakeQueue.getItems().some(part => part.row === row && part.col === col);
+
+}
+
 
 function generateFood() {
     foodPosition = {
