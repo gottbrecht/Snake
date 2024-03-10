@@ -1,22 +1,15 @@
-#grid {
-    display: grid;
-    grid-template-columns: repeat(10, 30px);
-    grid-template-rows: repeat(10, 30px);
-    gap: 1px;
-    border: 1px solid #000;
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f0f0f0;
 }
 
-.cell {
-    width: 30px;
-    height: 30px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-}
-
-.player {
-    background-color: green;
-}
-
-.goal {
-    background-color: red;
+#game-container {
+    border: 2px solid #000;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }

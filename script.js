@@ -170,21 +170,18 @@ function createEmptyBoard() {
 function displayBoard() {
     const board = createEmptyBoard();
 
-    // Draw snake on the board
     for (const part of snakeQueue.getItems()) {
         board[part.row][part.col] = 'S';
     }
 
-    // Draw food on the board
     board[foodPosition.row][foodPosition.col] = 'F';
 
-    // Print the board to the console
     for (let row = 0; row < GRID_HEIGHT; row++) {
         let rowStr = '';
         for (let col = 0; col < GRID_WIDTH; col++) {
             rowStr += board[row][col] + ' ';
         }
-        console.log(rowStr);
+       // console.log(rowStr);
     }
 }
 
