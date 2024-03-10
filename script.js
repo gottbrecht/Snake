@@ -140,7 +140,6 @@ function checkCollision(row, col) {
 
     const snakeQueueItems = snakeQueue.getItems();
 
-
     for (const part of snakeQueueItems) {
         if (part.row === row && part.col === col) {
             return true;
@@ -181,49 +180,4 @@ function displayBoard() {
         for (let col = 0; col < GRID_WIDTH; col++) {
             rowStr += board[row][col] + ' ';
         }
-       // console.log(rowStr);
-    }
-}
-
-
-function generateFood() {
-    foodPosition = {
-        row: Math.floor(Math.random() * GRID_HEIGHT),
-        col: Math.floor(Math.random() * GRID_WIDTH),
-    };
-
-    const snakeQueueItems = snakeQueue.getItems();
-
-    for (const part of snakeQueueItems) {
-        if (foodPosition.row === part.row && foodPosition.col === part.col) {
-            generateFood();
-            return;
-        }
-    }
-    writeToCell(foodPosition.row, foodPosition.col, 2);
-
-}
-
-function clearGrid() {
-    for (let row = 0; row < GRID_HEIGHT; row++) {
-        for (let col = 0; col < GRID_WIDTH; col++) {
-            writeToCell(row, col, 0);
-        }
-    }
-}
-
-//initialize the game
-function initializeGame() {
-    snakeQueue.enqueue({ row: 5, col: 5 });
-    snakeQueue.enqueue({ row: 5, col: 6 });
-    snakeQueue.enqueue({ row: 5, col: 7 });
-    generateFood();
-}
-
-function resetGame() {
-    snakeQueue.getItems().length = 0;
-    initializeGame();
-}
-
-start();
-
+        console.log(rowS
