@@ -1,5 +1,41 @@
 "use strict";
 
+class Queue {
+    constructor() {
+        this.items = [];
+    }
+
+    enqueue(item) {
+        this.items.push(item);
+    }
+
+    dequeue() {
+        if (this.isEmpty()) {
+            return null;
+        }
+        return this.items.shift();
+    }
+
+    front() {
+        if (this.isEmpty()) {
+            return null;
+        }
+        return this.items[0];
+    }
+
+    isEmpty() {
+        return this.items.length === 0;
+    }
+
+    size() {
+        return this.items.length;
+    }
+
+    getItems() {
+        return this.items;
+    }
+}
+
 const GRID_WIDTH = 10;
 const GRID_HEIGHT = 10;
 
@@ -7,7 +43,7 @@ const snakeQueue = new Queue();
 let foodPosition = { row: 0, col: 0 };
 
 const controls = { left: false, right: false };
-let direction;
+let direction = "right";
 
 function start() {
     console.log(`Javascript kører`);
@@ -44,15 +80,15 @@ function tick() {
 
     moveSnake();
 
-    checkCollisions();
+    checkCollision();
 
     displayBoard();
 }
 
 function moveSnake() {
     const head = {
-        row: snakeQueue[snakeQueue.length - 1].row,
-        col: snakeQueue[snakeQueue.length - 1].col,
+        row: snakeQueue.front().row,
+        col: snakeQueue.front().col,
     };
 
     //handle controls
@@ -97,9 +133,35 @@ function moveSnake() {
 }
 
 function checkCollision(row, col) {
+    if (row < 0 || row >= GRID_HEIGHT || col < 0 || col >= GRID_WIDTH) {
+        return true;
+    }
+
+    for (const part of snakeQueue) {
+        if (part.row === row && part.col === col) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function generateFood() {
+    foodPosition = {
+        row: Math.floor(Math.random() * GRID_HEIGHT),
+        col: Math.floor(Math.random() * GRID_WIDTH),
+    };
+
+    const snakeQueueItems = snakeQueue.getItems();
+
+
+    for (const part of snakeQueue) {
+        if (foodPosition.row === part.row && foodPosition.col === part.col) {
+            generateFood();
+            return;
+        }
+    }
+    writeToCell(foodPosition.row, foodPosition.col, 2);
 
 }
 
@@ -113,13 +175,18 @@ function clearGrid() {
 
 //initialize the game
 function initializeGame() {
-    
-    snakeQueue.push({ row: 5, col: 5 }, { row: 5, col: 6 }, { row: 5, col: 7 });
+    snakeQueue.enqueue({ row: 5, col: 5 });
+    snakeQueue.enqueue({ row: 5, col: 6 });
+    snakeQueue.enqueue({ row: 5, col: 7 });
     generateFood();
 }
-
-document.addEventListener("keydown", handleInput);
 
 //start the game
 initializeGame();
 tick();
+
+function resetGame() {
+    snakeQueue.length = 0;
+    initializeGame();
+}
+
