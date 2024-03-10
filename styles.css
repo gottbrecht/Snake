@@ -1,28 +1,22 @@
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
-
-#game-board {
+#grid {
     display: grid;
-    grid-template-columns: repeat(20, 20px);
+    grid-template-columns: repeat(10, 30px);
+    grid-template-rows: repeat(10, 30px);
     gap: 1px;
-    border: 1px solid #ccc;
+    border: 1px solid #000;
 }
 
 .cell {
-    width: 20px;
-    height: 20px;
-    background-color: #fff;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
 }
 
-.snake {
-    background-color: #333;
+.player {
+    background-color: green;
 }
 
-.food {
-    background-color: #f00;
+.goal {
+    background-color: red;
 }

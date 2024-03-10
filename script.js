@@ -1,77 +1,146 @@
-const boardSize = 20;
-const speed = 200;
-let snake = [{ x: 5, y: 5 }];
-let direction = 'right';
-let food = generateFood();
-let intervalId;
+"use strict";
 
-function startGame() {
-    createBoard();
-    intervalId = setInterval(moveSnake, speed);
-    document.addEventListener('keydown', changeDirection);
+window.addEventListener("load", start);
+
+// ******** CONTROLLER ********
+
+function start() {
+    console.log(`Javascript kører`);
+
+    document.addEventListener("keydown", keyDown);
+    document.addEventListener("keyup", keyUp);
+    // start ticking
+    tick();
 }
 
-function createBoard() {
-    const gameBoard = document.getElementById('game-board');
-    for (let i = 0; i < boardSize * boardSize; i++) {
-        const cell = document.createElement('div');
-        cell.classList.add('cell');
-        gameBoard.appendChild(cell);
+const controls = { left: false, right: false };
+
+function keyDown(event) {
+    switch (event.key) {
+        case "a":
+        case "ArrowLeft":
+            controls.left = true;
+            break;
+        case "d":
+        case "ArrowRight":
+            controls.right = true;
+            break;
     }
-    drawSnake();
-    drawFood();
 }
 
-function drawSnake() {
-    const cells = document.querySelectorAll('.cell');
-    cells.forEach(cell => cell.classList.remove('snake'));
-
-    snake.forEach(segment => {
-        const index = segment.x + segment.y * boardSize;
-        cells[index].classList.add('snake');
-    });
+function keyUp(event) {
+    switch (event.key) {
+        case "a":
+        case "ArrowLeft":
+            controls.left = false;
+            break;
+        case "d":
+        case "ArrowRight":
+            controls.right = false;
+            break;
+    }
 }
 
-function drawFood() {
-    const cells = document.querySelectorAll('.cell');
-    const index = food.x + food.y * boardSize;
-    cells[index].classList.add('food');
-}
+function tick() {
+    // setup next tick
+    setTimeout(tick, 500);
 
-function moveSnake() {
-    const head = Object.assign({}, snake[0]);
+    for (const part of queue) {
+        writeToCell(part.row, part.col, 0);
+    }
+
+    if (controls.left) {
+        direction = "left";
+    } else if (controls.right) {
+        direction = "right";
+    }
+
+    // lav nyt head
+    const head = {
+        row: queue[queue.length - 1].row,
+        col: queue[queue.length - 1].col,
+    };
+
+    queue.push(head);
+
+    writeToCell(queue[0].row, queue[0].col, 0);
 
     switch (direction) {
-        case 'up':
-            head.y = (head.y - 1 + boardSize) % boardSize;
+        case "left":
+            head.col--;
+            if (head.col < 0) {
+                head.col = 9;
+            }
             break;
-        case 'down':
-            head.y = (head.y + 1) % boardSize;
-            break;
-        case 'left':
-            head.x = (head.x - 1 + boardSize) % boardSize;
-            break;
-        case 'right':
-            head.x = (head.x + 1) % boardSize;
+        case "right":
+            head.col++;
+            if (head.col > 9) {
+                head.col = 0;
+            }
             break;
     }
 
-    snake.unshift(head);
-
-    if (head.x === food.x && head.y === food.y) {
-        food = generateFood();
-    } else {
-        snake.pop();
+    // Check if the head collides with the body
+    for (let i = 1; i < queue.length; i++) {
+        if (head.row === queue[i].row && head.col === queue[i].col) {
+            alert('Game Over! Your score: ' + (queue.length - 1));
+            resetGame();
+            return;
+        }
     }
 
-    if (checkCollision()) {
-        clearInterval(intervalId);
-        alert('Game Over! Your score: ' + (snake.length - 1));
-        resetGame();
+    writeToCell(head.row, head.col, 1);
+
+    // Remove the tail if the snake hasn't grown
+    if (queue.length > 1) {
+        queue.shift();
     }
 
-    drawSnake();
-    drawFood();
-    }
+    // display the model in full
+    displayBoard();
+}
 
-    
+// Existing Snake model
+let direction;
+const queue = [
+    { row: 5, col: 5 },
+    { row: 5, col: 6 },
+    { row: 5, col: 7 },
+];
+
+// Existing Board model
+const model = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+];
+
+// Existing View function
+function writeToCell(row, col, value) {
+    model[row][col] = value;
+}
+
+function readFromCell(row, col) {
+    return model[row][col];
+}
+
+function displayBoard() {
+    const cells = document.querySelectorAll("#grid .cell");
+    for (let row = 0; row < 10; row++) {
+        for (let col = 0; col < 10; col++) {
+            const index = row * 10 + col;
+
+            switch (readFromCell(row, col)) {
+                case 0:
+                    cells
+            }
+        }
+    }
+}
