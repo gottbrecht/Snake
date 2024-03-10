@@ -37,3 +37,41 @@ function drawFood() {
     const index = food.x + food.y * boardSize;
     cells[index].classList.add('food');
 }
+
+function moveSnake() {
+    const head = Object.assign({}, snake[0]);
+
+    switch (direction) {
+        case 'up':
+            head.y = (head.y - 1 + boardSize) % boardSize;
+            break;
+        case 'down':
+            head.y = (head.y + 1) % boardSize;
+            break;
+        case 'left':
+            head.x = (head.x - 1 + boardSize) % boardSize;
+            break;
+        case 'right':
+            head.x = (head.x + 1) % boardSize;
+            break;
+    }
+
+    snake.unshift(head);
+
+    if (head.x === food.x && head.y === food.y) {
+        food = generateFood();
+    } else {
+        snake.pop();
+    }
+
+    if (checkCollision()) {
+        clearInterval(intervalId);
+        alert('Game Over! Your score: ' + (snake.length - 1));
+        resetGame();
+    }
+
+    drawSnake();
+    drawFood();
+    }
+
+    
