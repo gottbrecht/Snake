@@ -73,16 +73,12 @@ function keyUp(event) {
 }
 
 function tick() {
-    
     setTimeout(tick, 500);
     
     clearGrid();
-
     moveSnake();
-
-    checkCollision();
-
     displayBoard();
+    checkCollision();
 }
 
 function moveSnake() {
@@ -116,7 +112,7 @@ function moveSnake() {
 
     //check if the head collides with the body or hits the wall
     if (checkCollision(head.row, head.col)) {
-        alert('Game Over! Your score: ' + snakeQueue.length);
+        alert('Game Over! Your score: ' + snakeQueue.size());
         resetGame();
         return;
     }
@@ -126,7 +122,6 @@ function moveSnake() {
         snakeQueue.unshift({ row: head.row, col: head.col });
         generateFood();
     } else {
-        // Move the snake by adding the new head and removing the tail
         snakeQueue.push({ row: head.row, col: head.col });
         snakeQueue.shift();
     }
@@ -137,7 +132,10 @@ function checkCollision(row, col) {
         return true;
     }
 
-    for (const part of snakeQueue) {
+    const snakeQueueItems = snakeQueue.getItems();
+
+
+    for (const part of snakeQueueItems) {
         if (part.row === row && part.col === col) {
             return true;
         }
@@ -145,6 +143,31 @@ function checkCollision(row, col) {
 
     return false;
 }
+
+function writeToCell(row, col, value) {
+}
+
+function displayBoard() {
+    const board = createEmptyBoard();
+
+    // Draw snake on the board
+    for (const part of snakeQueue.getItems()) {
+        board[part.row][part.col] = 'S';
+    }
+
+    // Draw food on the board
+    board[foodPosition.row][foodPosition.col] = 'F';
+
+    // Print the board to the console
+    for (let row = 0; row < GRID_HEIGHT; row++) {
+        let rowStr = '';
+        for (let col = 0; col < GRID_WIDTH; col++) {
+            rowStr += board[row][col] + ' ';
+        }
+        console.log(rowStr);
+    }
+}
+
 
 function generateFood() {
     foodPosition = {
